@@ -1,5 +1,6 @@
 package com.kjk.criminalintent.view
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,9 +23,14 @@ class CrimeFragment : Fragment() {
 
     private lateinit var crime: CrimeEntity
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach(): ")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d(TAG, "onCreate(): ")
         crime = CrimeEntity()
     }
 
@@ -33,7 +39,7 @@ class CrimeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView()")
+        Log.d(TAG, "onCreateView(): ")
         _binding = FragmentCrimeBinding.inflate(inflater, container, false)
 
         binding.crimeDateButton.apply {
@@ -42,6 +48,11 @@ class CrimeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated: ")
     }
 
     override fun onStart() {
@@ -64,12 +75,41 @@ class CrimeFragment : Fragment() {
 
         binding.apply {
             crimeTitleEditText.addTextChangedListener(titleWatcher)
+            crimeSolvedCheckBox.setOnCheckedChangeListener { compoundButton, isChecked ->
+                crime.isSolved = isChecked
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "onDetach: ")
     }
 
     companion object {
