@@ -38,7 +38,7 @@ class CrimeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         Log.d(TAG, "onCreateView(): ")
         _binding = FragmentCrimeBinding.inflate(inflater, container, false)
 
