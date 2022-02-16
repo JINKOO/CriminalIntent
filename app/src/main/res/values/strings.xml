@@ -6,4 +6,7 @@
     <string name="crime_title_label">제목</string>
     <string name="crime_detail_label">상세 내역</string>
     <string name="crime_solved_label">해결됨</string>
+
+    <!-- CrimeListFragment -->
+    <string name="require_police">경찰 협조</string>
 </resources>

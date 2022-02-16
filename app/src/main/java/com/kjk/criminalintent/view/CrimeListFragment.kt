@@ -21,7 +21,7 @@ class CrimeListFragment : Fragment() {
         ViewModelProvider(this@CrimeListFragment).get(CrimeListViewModel::class.java)
     }
 
-    private val adapter by lazy {
+    private val crimeAdapter by lazy {
         CrimeAdapter(crimeListViewModel)
     }
 
@@ -46,9 +46,9 @@ class CrimeListFragment : Fragment() {
     }
 
     private fun initLayout() {
-        binding.crimeRecyclerView.apply {
+        binding.crimeRecyclerView.run {
             layoutManager = LinearLayoutManager(context)
-            this.adapter = adapter
+            adapter = crimeAdapter
         }
     }
 
