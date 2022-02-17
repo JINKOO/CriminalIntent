@@ -4,10 +4,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.kjk.criminalintent.data.CrimeDataSender
-import com.kjk.criminalintent.data.CrimeEntity
 import com.kjk.criminalintent.databinding.ListItemCrimeBinding
-import java.text.DateFormat
-import java.text.DateFormat.LONG
+import com.kjk.criminalintent.extension.Date.dateFormatLong
 import java.util.*
 
 class CrimeViewHolder(
@@ -35,7 +33,7 @@ class CrimeViewHolder(
     }
 
     private fun setCrimeDate(date: Date) {
-        binding.crimeDate.apply { text = dataSender.getDateFormatString(date) }
+        binding.crimeDate.apply { text = date.dateFormatLong() /*dataSender.getDateFormatString(date)*/ }
     }
 
     private fun setCrimeIsSolved(isSolved: Boolean) {

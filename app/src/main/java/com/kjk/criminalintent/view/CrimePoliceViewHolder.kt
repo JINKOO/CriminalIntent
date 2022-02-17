@@ -5,6 +5,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.kjk.criminalintent.data.CrimeDataSender
 import com.kjk.criminalintent.databinding.ListItemCrimePoliceBinding
+import com.kjk.criminalintent.extension.Date.dateFormatLong
+import com.kjk.criminalintent.extension.Date.toLocalDateTime
 import java.util.*
 
 class CrimePoliceViewHolder(
@@ -27,7 +29,7 @@ class CrimePoliceViewHolder(
     }
 
     private fun setCrimeDate(date: Date) {
-        binding.crimeDate.apply { text = dataSender.getLocalDateFormatString(date) }
+        binding.crimeDate.apply { text = date.toLocalDateTime().dateFormatLong() /*dataSender.getLocalDateFormatString(date)*/ }
     }
 
     private fun setListener() {
