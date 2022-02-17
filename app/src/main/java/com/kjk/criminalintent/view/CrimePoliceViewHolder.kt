@@ -17,7 +17,7 @@ class CrimePoliceViewHolder(
     }
 
     fun bind(position: Int) {
-        val crime = dataSender.getCimeList()[position]
+        val crime = dataSender.getCrimeList()[position]
         setCrimeText(crime.title)
         setCrimeDate(crime.date)
     }
@@ -27,7 +27,7 @@ class CrimePoliceViewHolder(
     }
 
     private fun setCrimeDate(date: Date) {
-        binding.crimeDate.apply { text = date.toString() }
+        binding.crimeDate.apply { text = dataSender.getLocalDateFormatString(date) }
     }
 
     private fun setListener() {
@@ -35,7 +35,7 @@ class CrimePoliceViewHolder(
     }
 
     private fun showToast() {
-        Toast.makeText(binding.root.context, "call police cause of ${dataSender.getCimeList()[adapterPosition].title}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(binding.root.context, "call police cause of ${dataSender.getCrimeList()[adapterPosition].title}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(view: View?) {

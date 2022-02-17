@@ -27,7 +27,7 @@ class CrimeListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: ${crimeListViewModel.getCimeList().size}")
+        Log.d(TAG, "onCreate: ${crimeListViewModel.getCrimeList().size}")
     }
 
     override fun onCreateView(
