@@ -41,7 +41,7 @@ class CrimeAdapter(
 
     override fun getItemViewType(position: Int): Int {
         Log.d(TAG, "getItemViewType: ")
-        return if (dataSender.getCimeList()[position].requiresPolice) {
+        return if (dataSender.getCrimeList()[position].requiresPolice) {
             REQUIRE_POLICE
         } else {
             REQUIRE_NO_POLICE
@@ -50,7 +50,7 @@ class CrimeAdapter(
 
     override fun getItemCount(): Int {
         Log.d(TAG, "getItemCount: ")
-        return dataSender.getCimeList().size
+        return dataSender.getCrimeList().size
     }
 
     companion object {
