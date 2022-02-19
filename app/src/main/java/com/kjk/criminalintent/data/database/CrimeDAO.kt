@@ -27,12 +27,9 @@ import java.util.*
  */
 @Dao
 interface CrimeDAO {
-
     @Query("SELECT * FROM Crime")
-//    fun getCrimes(): List<CrimeEntity>
     fun getCrimes(): LiveData<List<Crime>>
 
     @Query("SELECT * FROM Crime WHERE id=(:id)")
     fun getCrime(id: UUID): LiveData<Crime?>
-//    fun getCrime(id: UUID): CrimeEntity?
 }
