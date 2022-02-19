@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.kjk.criminalintent.data.CrimeEntity
+import com.kjk.criminalintent.data.Crime
 import com.kjk.criminalintent.databinding.FragmentCrimeBinding
 
 // Controller (Model과 View와 상호 작용한다.)
@@ -21,7 +21,7 @@ class CrimeFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    private lateinit var crime: CrimeEntity
+    private lateinit var crime: Crime
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -31,7 +31,7 @@ class CrimeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(): ")
-        crime = CrimeEntity()
+        crime = Crime()
     }
 
     override fun onCreateView(
