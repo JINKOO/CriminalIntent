@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kjk.criminalintent.data.Crime
@@ -22,13 +21,12 @@ class CrimeListFragment : Fragment() {
         ViewModelProvider(this@CrimeListFragment).get(CrimeListViewModel::class.java)
     }
 
-//    private val crimeAdapter by lazy {
-//        CrimeAdapter(crimes)
-//    }
+    private val crimeAdapter by lazy {
+        CrimeAdapter(crimeListViewModel.crimeLiveData.value!!)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Log.d(TAG, "onCreate: ${crimeListViewModel.getCrimeList().size}")
         Log.d(TAG, "onCreate: ")
     }
 
@@ -38,7 +36,7 @@ class CrimeListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCrimeListBinding.inflate(inflater, container, false)
-//        initLayout()
+        initLayout()
         return binding.root
     }
 
@@ -50,7 +48,7 @@ class CrimeListFragment : Fragment() {
         ) { crimes ->
             crimes?.let {
                 Log.i(TAG, "onViewCreated: Got crimes ${crimes.size}")
-                initLayout(crimes)
+                updateUI()
             }
         }
     }
@@ -60,10 +58,16 @@ class CrimeListFragment : Fragment() {
         _binding = null
     }
 
-    private fun initLayout(crimes: List<Crime>) {
+    private fun initLayout() {
         binding.crimeRecyclerView.run {
             layoutManager = LinearLayoutManager(context)
-            adapter = CrimeAdapter(crimes)
+            adapter = CrimeAdapter(emptyList())
+        }
+    }
+
+    private fun updateUI() {
+        binding.crimeRecyclerView.run {
+            adapter = crimeAdapter
         }
     }
 
