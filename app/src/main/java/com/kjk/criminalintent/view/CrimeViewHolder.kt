@@ -3,6 +3,7 @@ package com.kjk.criminalintent.view
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.kjk.criminalintent.data.Crime
 import com.kjk.criminalintent.data.CrimeDataSender
 import com.kjk.criminalintent.databinding.ListItemCrimeBinding
 import com.kjk.criminalintent.extension.Date.dateFormatLong
@@ -10,7 +11,8 @@ import java.util.*
 
 class CrimeViewHolder(
     private val binding: ListItemCrimeBinding,
-    private val dataSender: CrimeDataSender
+    private val crimes: List<Crime>
+//    private val dataSender: CrimeDataSender
 ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
     init {
@@ -18,7 +20,7 @@ class CrimeViewHolder(
     }
 
     fun bind(position: Int) {
-        val crime = dataSender.getCrimeList()[position]
+        val crime = crimes[position]
         setCrimeText(crime.title)
         setCrimeDate(crime.date)
         setCrimeIsSolved(crime.isSolved)
@@ -51,6 +53,6 @@ class CrimeViewHolder(
     }
 
     private fun showToast() {
-        Toast.makeText(binding.root.context, "${dataSender.getCrimeList()[adapterPosition].title} pressed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(binding.root.context, "${crimes[adapterPosition].title} pressed", Toast.LENGTH_SHORT).show()
     }
 }
