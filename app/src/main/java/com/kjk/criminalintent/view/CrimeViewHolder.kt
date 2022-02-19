@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.kjk.criminalintent.data.Crime
-import com.kjk.criminalintent.data.CrimeDataSender
 import com.kjk.criminalintent.databinding.ListItemCrimeBinding
 import com.kjk.criminalintent.extension.Date.dateFormatLong
 import java.util.*
