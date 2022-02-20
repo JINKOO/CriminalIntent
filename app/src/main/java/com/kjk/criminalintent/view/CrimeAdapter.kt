@@ -9,7 +9,8 @@ import com.kjk.criminalintent.databinding.ListItemCrimeBinding
 import com.kjk.criminalintent.databinding.ListItemCrimePoliceBinding
 
 class CrimeAdapter(
-    private val crimes: List<Crime>
+    private val crimes: List<Crime>,
+    private val callBacks: CrimeListFragment.CallBacks
 //    private val dataSender: CrimeDataSender
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -20,13 +21,13 @@ class CrimeAdapter(
             REQUIRE_POLICE -> {
                 Log.d(TAG, "onCreateViewHolder: ${REQUIRE_POLICE}")
                 val binding = ListItemCrimePoliceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                CrimePoliceViewHolder(binding, crimes)
+                CrimePoliceViewHolder(binding, crimes, callBacks)
             }
 
             else -> {
                 Log.d(TAG, "onCreateViewHolder: ${REQUIRE_NO_POLICE}")
                 val binding = ListItemCrimeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                CrimeViewHolder(binding, crimes)
+                CrimeViewHolder(binding, crimes, callBacks)
             }
         }
     }
