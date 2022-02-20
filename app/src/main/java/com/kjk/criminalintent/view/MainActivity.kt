@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import com.kjk.criminalintent.R
 import com.kjk.criminalintent.databinding.ActivityMainBinding
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CrimeListFragment.CallBacks {
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -25,6 +26,17 @@ class MainActivity : AppCompatActivity() {
                     .add(R.id.fragment_container, fragment)
                     .commit()
         }
+    }
+
+    // hosting Activity에서 구현한다.
+    override fun onCrimeSelected(crimeID: UUID) {
+        Log.i(TAG, "onCrimeSelected: ${crimeID}")
+        val fragment = CrimeFragment.newInstance(crimeID = crimeID)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onStart() {
