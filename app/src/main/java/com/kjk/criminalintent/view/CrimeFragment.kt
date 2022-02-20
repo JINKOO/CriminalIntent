@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.kjk.criminalintent.data.Crime
+import com.kjk.criminalintent.data.CrimeDetailViewModel
 import com.kjk.criminalintent.databinding.FragmentCrimeBinding
+import java.util.*
 
 // Controller (Model과 View와 상호 작용한다.)
 // 특정 범죄의 상세내역 조회, 수정 기능 제공
@@ -20,6 +23,10 @@ class CrimeFragment : Fragment() {
 
     private val binding
         get() = _binding!!
+
+    private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
+        ViewModelProvider(this@CrimeFragment).get(CrimeDetailViewModel::class.java)
+    }
 
     private lateinit var crime: Crime
 
@@ -32,6 +39,11 @@ class CrimeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(): ")
         crime = Crime()
+
+        val crimeID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+        Log.d(TAG, "onCreate: ${crimeID}")
+
+        // 궁극적으로는 database로 부터 data를 로드해야 한다.
     }
 
     override fun onCreateView(
@@ -114,5 +126,14 @@ class CrimeFragment : Fragment() {
 
     companion object {
         private const val TAG = "CrimeFragment"
+        private const val ARG_CRIME_ID = "crime_id"
+        fun newInstance(crimeID: UUID): CrimeFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_CRIME_ID, crimeID)
+            }
+            return CrimeFragment().apply {
+                arguments = args
+            }
+        }
     }
 }

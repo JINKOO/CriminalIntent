@@ -10,16 +10,24 @@ import java.util.*
 
 class CrimeViewHolder(
     private val binding: ListItemCrimeBinding,
-    private val crimes: List<Crime>
+    private val crimes: List<Crime>,
+    private val callBacks: CrimeListFragment.CallBacks
 //    private val dataSender: CrimeDataSender
 ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+
+//    interface CallBacks {
+//        fun onCrimeSelected(crimeID: UUID)
+//    }
+//    private val callBacks: CallBacks? = null
+
+    private lateinit var crime: Crime
 
     init {
         setListener()
     }
 
     fun bind(position: Int) {
-        val crime = crimes[position]
+        crime = crimes[position]
         setCrimeText(crime.title)
         setCrimeDate(crime.date)
         setCrimeIsSolved(crime.isSolved)
@@ -49,6 +57,9 @@ class CrimeViewHolder(
 
     override fun onClick(view: View?) {
         showToast()
+        // 여기서 호스팅 액티비티의 fragment manager를 가져와서 처리해도 되지만, 프래그먼트 독립성에 어긋나기 때문에
+        // 호스팅 액티비티에서 프래그먼트 이동을 정의한다.
+        callBacks.onCrimeSelected(crime.id)
     }
 
     private fun showToast() {
