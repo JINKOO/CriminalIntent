@@ -44,6 +44,7 @@ class CrimeFragment : Fragment() {
         Log.d(TAG, "onCreate: ${crimeID}")
 
         // 궁극적으로는 database로 부터 data를 로드해야 한다.
+        crimeDetailViewModel.loadCrime(crimeID)
     }
 
     override fun onCreateView(
@@ -58,8 +59,18 @@ class CrimeFragment : Fragment() {
             text = crime.date.toString()
             isEnabled = false
         }
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        crimeDetailViewModel.crimeLiveData.observe(viewLifecycleOwner) { crime ->
+            crime?.let {
+                this.crime = crime
+                updateUI()
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -93,6 +104,17 @@ class CrimeFragment : Fragment() {
         }
     }
 
+    private fun updateUI() {
+        binding.run {
+            crimeTitleEditText.setText(crime.title)
+            crimeDateButton.text = crime.date.toString()
+            crimeSolvedCheckBox.run {
+                isChecked = crime.isSolved
+                jumpDrawablesToCurrentState()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
@@ -106,6 +128,7 @@ class CrimeFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: ")
+        crimeDetailViewModel.saveCrime(crime)
     }
 
     override fun onDestroyView() {
