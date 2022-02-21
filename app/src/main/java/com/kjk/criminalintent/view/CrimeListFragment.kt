@@ -32,9 +32,7 @@ class CrimeListFragment : Fragment() {
         ViewModelProvider(this@CrimeListFragment).get(CrimeListViewModel::class.java)
     }
 
-    private val crimeAdapter by lazy {
-        CrimeAdapter(crimeListViewModel.crimeLiveData.value!!, callBacks!!)
-    }
+    private lateinit var crimeAdapter: CrimeAdapter
 
     // Activity는 Context의 SubClass이다.
     // Fragment가 호스팅 액티비티에 연결될 때, 호출된다.
@@ -42,6 +40,7 @@ class CrimeListFragment : Fragment() {
     // 여기서 CrimeListFragment를 호스팅하는 액티비티 인스턴스가 Context 인스턴스이다.
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d(TAG, "onAttach: ")
         callBacks = context as CallBacks
     }
 
@@ -55,6 +54,7 @@ class CrimeListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "onCreateView: ")
         _binding = FragmentCrimeListBinding.inflate(inflater, container, false)
         initLayout()
         return binding.root
@@ -62,20 +62,41 @@ class CrimeListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d(TAG, "onViewCreated: ")
         crimeListViewModel.crimeLiveData.observe(
             viewLifecycleOwner
         ) { crimes ->
             crimes?.let {
                 Log.i(TAG, "onViewCreated: Got crimes ${crimes.size}")
-                updateUI()
+                updateUI(crimes)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
     }
 
     // Fragment가 호스팅 액티비티에서 분리될 때 호출 된다.
     override fun onDetach() {
         super.onDetach()
+        Log.d(TAG, "onDetach: ")
         _binding = null
         callBacks = null
     }
@@ -87,9 +108,9 @@ class CrimeListFragment : Fragment() {
         }
     }
 
-    private fun updateUI() {
+    private fun updateUI(crimes: List<Crime>) {
         binding.crimeRecyclerView.run {
-            adapter = crimeAdapter
+            adapter = CrimeAdapter(crimes, callBacks!!)
         }
     }
 

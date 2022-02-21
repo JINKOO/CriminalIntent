@@ -6,6 +6,8 @@ import androidx.room.Room
 import com.kjk.criminalintent.data.database.CrimeDataBase
 import java.lang.IllegalStateException
 import java.util.*
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 // Repository Pattern
 // 데이터베이스 액세스를 위해서, 구글의 앱 아키텍쳐 권장하는 레포지토리 패턴을 따른다.
@@ -25,10 +27,27 @@ class CrimeRepository private constructor(context: Context) {
     ).build()
 
     private val crimeDao = database.crimeDAO()
+    // LiveData를 반환하는 Dao함수들은 Room이 백그라운드 스레드에서 자동 실행하고, 메인 스레드로 데이터를 전달하기 때문에 UI를 변경할 수 있다.
+    // 하지만, 변경, 삽입에서는 Room이 백그라운드 스레드로 자동 실행하지 못한다. 따라서, 백그라운드 스레드로 변경, 삽입하는 함수들을 호출해야한다. --> exctutor사용
+    // 새로운 백그라운드 스레드를 사용해 블럭의 코드를 수행한다. main스레드를 방해하지 않고, 안전하게 데이터베이스 작업을 할 수 있다.
+    private val executor = Executors.newSingleThreadExecutor()
 
     // LiveData
     fun getCrimes(): LiveData<List<Crime>> = crimeDao.getCrimes()
     fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)
+
+    fun updateCrime(crime: Crime) {
+        executor.execute {
+            crimeDao.updateCrime(crime)
+        }
+    }
+
+    fun addCrime(crime: Crime) {
+        executor.execute {
+            crimeDao.addCrime(crime)
+        }
+    }
+
 
     companion object {
         private const val DATABASE_NAME = "crime-database"
