@@ -68,7 +68,8 @@ class CrimeListFragment : Fragment() {
         ) { crimes ->
             crimes?.let {
                 Log.i(TAG, "onViewCreated: Got crimes ${crimes.size}")
-                updateUI(crimes)
+                //updateUI(crimes)
+                crimeAdapter.submitList(crimes)
             }
         }
     }
@@ -104,13 +105,8 @@ class CrimeListFragment : Fragment() {
     private fun initLayout() {
         binding.crimeRecyclerView.run {
             layoutManager = LinearLayoutManager(context)
-            adapter = CrimeAdapter(emptyList(), callBacks!!)
-        }
-    }
-
-    private fun updateUI(crimes: List<Crime>) {
-        binding.crimeRecyclerView.run {
-            adapter = CrimeAdapter(crimes, callBacks!!)
+            crimeAdapter = CrimeAdapter(callBacks!!)
+            adapter = crimeAdapter
         }
     }
 
