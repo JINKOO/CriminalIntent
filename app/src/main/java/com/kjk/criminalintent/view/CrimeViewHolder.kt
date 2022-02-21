@@ -10,15 +10,8 @@ import java.util.*
 
 class CrimeViewHolder(
     private val binding: ListItemCrimeBinding,
-    private val crimes: List<Crime>,
     private val callBacks: CrimeListFragment.CallBacks
-//    private val dataSender: CrimeDataSender
 ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
-
-//    interface CallBacks {
-//        fun onCrimeSelected(crimeID: UUID)
-//    }
-//    private val callBacks: CallBacks? = null
 
     private lateinit var crime: Crime
 
@@ -26,8 +19,8 @@ class CrimeViewHolder(
         setListener()
     }
 
-    fun bind(position: Int) {
-        crime = crimes[position]
+    fun bind(crime: Crime) {
+        this.crime = crime
         setCrimeText(crime.title)
         setCrimeDate(crime.date)
         setCrimeIsSolved(crime.isSolved)
@@ -63,6 +56,6 @@ class CrimeViewHolder(
     }
 
     private fun showToast() {
-        Toast.makeText(binding.root.context, "${crimes[adapterPosition].title} pressed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(binding.root.context, "${crime.title} pressed", Toast.LENGTH_SHORT).show()
     }
 }
