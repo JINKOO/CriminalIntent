@@ -54,11 +54,6 @@ class CrimeFragment : Fragment() {
     ): View {
         Log.d(TAG, "onCreateView(): ")
         _binding = FragmentCrimeBinding.inflate(inflater, container, false)
-
-        binding.crimeDateButton.apply {
-            text = crime.date.toString()
-            isEnabled = false
-        }
         return binding.root
     }
 
@@ -100,6 +95,11 @@ class CrimeFragment : Fragment() {
             crimeTitleEditText.addTextChangedListener(titleWatcher)
             crimeSolvedCheckBox.setOnCheckedChangeListener { compoundButton, isChecked ->
                 crime.isSolved = isChecked
+            }
+            crimeDateButton.setOnClickListener{
+                DatePickerFragment().apply {
+                    show(this@CrimeFragment.parentFragmentManager, DIALOG_DATE)
+                }
             }
         }
     }
@@ -150,6 +150,7 @@ class CrimeFragment : Fragment() {
     companion object {
         private const val TAG = "CrimeFragment"
         private const val ARG_CRIME_ID = "crime_id"
+        private const val DIALOG_DATE = "DialogDate"
         fun newInstance(crimeID: UUID): CrimeFragment {
             val args = Bundle().apply {
                 putSerializable(ARG_CRIME_ID, crimeID)
