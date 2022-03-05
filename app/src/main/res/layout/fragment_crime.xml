@@ -32,6 +32,12 @@
         android:layout_height="wrap_content"
         tools:text="Thu Mar 12 11:56 EST 2020"/>
 
+    <Button
+        android:id="@+id/crime_time_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="발생 시간 :: 23시 59분"/>
+
     <CheckBox
         android:id="@+id/crime_solved_check_box"
         android:layout_width="match_parent"
