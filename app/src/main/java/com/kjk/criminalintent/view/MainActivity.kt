@@ -7,7 +7,9 @@ import com.kjk.criminalintent.R
 import com.kjk.criminalintent.databinding.ActivityMainBinding
 import java.util.*
 
-class MainActivity : AppCompatActivity(), CrimeListFragment.CallBacks {
+class MainActivity :
+    AppCompatActivity(),
+    CrimeListFragment.CallBacks {
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
