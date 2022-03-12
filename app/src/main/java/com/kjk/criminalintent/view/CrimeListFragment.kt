@@ -3,18 +3,19 @@ package com.kjk.criminalintent.view
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kjk.criminalintent.R
 import com.kjk.criminalintent.data.Crime
 import com.kjk.criminalintent.data.CrimeListViewModel
 import com.kjk.criminalintent.databinding.FragmentCrimeListBinding
 import java.util.*
 
-class CrimeListFragment : Fragment() {
+class CrimeListFragment :
+    Fragment(),
+    View.OnClickListener {
 
     /**
      * hosting Activity에서 구현할 인터페이스
@@ -24,7 +25,6 @@ class CrimeListFragment : Fragment() {
     }
 
     private var callBacks: CallBacks? = null
-
     private var _binding: FragmentCrimeListBinding? = null
     private val binding get() = _binding!!
 
@@ -47,6 +47,8 @@ class CrimeListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
+        // onCreateOptionsMenu() 콜백을 호출해야함을 알려준다.
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -57,6 +59,7 @@ class CrimeListFragment : Fragment() {
         Log.d(TAG, "onCreateView: ")
         _binding = FragmentCrimeListBinding.inflate(inflater, container, false)
         initLayout()
+        initListener()
         return binding.root
     }
 
@@ -68,8 +71,34 @@ class CrimeListFragment : Fragment() {
         ) { crimes ->
             crimes?.let {
                 Log.i(TAG, "onViewCreated: Got crimes ${crimes.size}")
-                //updateUI(crimes)
-                crimeAdapter.submitList(crimes)
+                if (crimes.isEmpty()) {
+                    binding.noDataConstraintLayout.visibility = View.VISIBLE
+                } else {
+                    binding.noDataConstraintLayout.visibility = View.GONE
+                    crimeAdapter.submitList(crimes)
+                }
+            }
+        }
+    }
+
+    private fun initLayout() {
+        binding.crimeRecyclerView.run {
+            layoutManager = LinearLayoutManager(context)
+            crimeAdapter = CrimeAdapter(callBacks!!)
+            adapter = crimeAdapter
+        }
+    }
+
+    private fun initListener() {
+        binding.run {
+            createDataButton.setOnClickListener(this@CrimeListFragment)
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when(view) {
+            binding.createDataButton -> {
+                createNewCrime()
             }
         }
     }
@@ -102,12 +131,28 @@ class CrimeListFragment : Fragment() {
         callBacks = null
     }
 
-    private fun initLayout() {
-        binding.crimeRecyclerView.run {
-            layoutManager = LinearLayoutManager(context)
-            crimeAdapter = CrimeAdapter(callBacks!!)
-            adapter = crimeAdapter
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        Log.d(TAG, "onCreateOptionsMenu: ")
+        inflater.inflate(R.menu.fragment_crime_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.new_crime -> {
+                createNewCrime()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
+    }
+
+    private fun createNewCrime() {
+        val crime = Crime()
+        crimeListViewModel.addCrime(crime)
+        callBacks?.onCrimeSelected(crime.id)
     }
 
     companion object {

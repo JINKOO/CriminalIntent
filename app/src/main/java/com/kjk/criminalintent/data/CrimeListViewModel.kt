@@ -15,6 +15,11 @@ class CrimeListViewModel : ViewModel() {
     private val crimeRepository = CrimeRepository.get()
     val crimeLiveData = crimeRepository.getCrimes()
 
+    // 14장 새로운 범죄 데이터 추가
+    fun addCrime(crime: Crime) {
+        crimeRepository.addCrime(crime)
+    }
+
     companion object {
         private const val TAG = "CrimeListViewModel"
         private const val MAX_DATA_SIZE = 100

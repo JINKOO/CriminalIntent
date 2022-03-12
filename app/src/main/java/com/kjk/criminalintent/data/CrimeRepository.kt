@@ -42,9 +42,16 @@ class CrimeRepository private constructor(context: Context) {
         }
     }
 
+    // 14장 새로운 범죄 데이터를 추가한다.
     fun addCrime(crime: Crime) {
         executor.execute {
             crimeDao.addCrime(crime)
+        }
+    }
+
+    fun deleteCrime(crime: Crime) {
+        executor.execute {
+            crimeDao.deleteCrime(crime)
         }
     }
 

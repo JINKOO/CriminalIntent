@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import com.kjk.criminalintent.R
 import com.kjk.criminalintent.data.Crime
 import com.kjk.criminalintent.data.CrimeDetailViewModel
 import com.kjk.criminalintent.databinding.FragmentCrimeBinding
@@ -41,6 +40,9 @@ class CrimeFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(): ")
+
+        setHasOptionsMenu(true)
+
         crime = Crime()
 
         val crimeID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
@@ -138,6 +140,25 @@ class CrimeFragment :
             crimeSolvedCheckBox.run {
                 isChecked = crime.isSolved
                 jumpDrawablesToCurrentState()
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_crime, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.delete_crime -> {
+                // database에서 삭제
+                crimeDetailViewModel.deleteCrime(crime)
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
     }
