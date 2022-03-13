@@ -66,14 +66,17 @@ class CrimeListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
+
         crimeListViewModel.crimeLiveData.observe(
             viewLifecycleOwner
         ) { crimes ->
             crimes?.let {
                 Log.i(TAG, "onViewCreated: Got crimes ${crimes.size}")
                 if (crimes.isEmpty()) {
+                    Log.d(TAG, "onViewCreated: if()")
                     binding.noDataConstraintLayout.visibility = View.VISIBLE
                 } else {
+                    Log.d(TAG, "onViewCreated: else")
                     binding.noDataConstraintLayout.visibility = View.GONE
                     crimeAdapter.submitList(crimes)
                 }
