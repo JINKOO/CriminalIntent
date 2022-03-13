@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.kjk.criminalintent.data.database.CrimeDataBase
+import com.kjk.criminalintent.data.database.migration_1_2
 import java.lang.IllegalStateException
 import java.util.*
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 // Repository Pattern
@@ -24,7 +24,9 @@ class CrimeRepository private constructor(context: Context) {
         context.applicationContext,
         CrimeDataBase::class.java,
         DATABASE_NAME
-    ).build()
+    )//.build()
+        .addMigrations(migration_1_2) // CrimeEntity Model계층에서 suspect 칼럼 값 추가로, Room에 새 버전의 데이터베이스를 생성하기 위해.
+        .build()
 
     private val crimeDao = database.crimeDAO()
     // LiveData를 반환하는 Dao함수들은 Room이 백그라운드 스레드에서 자동 실행하고, 메인 스레드로 데이터를 전달하기 때문에 UI를 변경할 수 있다.

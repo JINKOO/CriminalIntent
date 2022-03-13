@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 const val FORMAT_LONG = "EEEE, dd, MMMM, yyyy"
+const val FORTMAT_LONGLONG = "yyyy년 M월 d일 H시 m분, E요일"
 
 fun Date.dateFormatLong(): String {
     val formatter = SimpleDateFormat(FORMAT_LONG, Locale.ENGLISH)
