@@ -3,6 +3,8 @@ package com.kjk.criminalintent.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -71,7 +73,11 @@ class CrimeFragment :
                 val contactUri = result.data?.data ?: return@registerForActivityResult
 
                 // 쿼리에서 값으로 반환할 필드를 지정한다.
-                val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+                // TODO 15장 챌린지 :: 또 다른 암시적 인텐트
+                val queryFields = arrayOf(
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                )
 
                 // 쿼리를 수행한다. contactUri는 콘텐츠 제공자의 테이블을 나타낸다.
                 val cursor = requireActivity().contentResolver
@@ -86,10 +92,12 @@ class CrimeFragment :
                     // 첫번째 데이터 행의 첫번째 속상 값을 가져 온다.
                     // 이 값이 용의자의 이름이다.
                     it.moveToFirst()
-                    val suspect = it.getString(0)
-                    crime.suspect = suspect
+                    val suspectName = it.getString(0)
+                    val suspectPhone = it.getString(1)
+                    Log.d(TAG, "size: ${cursor.count}, name: ${suspectName}, phoneNum : ${suspectPhone}")
+                    crime.suspect = suspectName
                     crimeDetailViewModel.saveCrime(crime)
-                    binding.selectSuspectButton.text = suspect
+                    binding.selectSuspectButton.text = suspectName
                 }
             }
         }
@@ -115,8 +123,6 @@ class CrimeFragment :
             crime.date = result
             updateUI()
         }
-
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -194,6 +200,25 @@ class CrimeFragment :
                 setOnClickListener {
                     getResultSuspect.launch(pickContactIntent)
                 }
+
+                // 일부 사용자 장치에는 연락처 앱이 없을 수 있다.
+                // 이때는 버그(안드로이드 OS가 일치하는 액티비티를 찾을 수 없으므로, 앱이 중단)
+                // 연락처 앱이 없는 장치의 방어코드
+                val packageManager: PackageManager = requireActivity().packageManager
+                val resolvedActivity: ResolveInfo? = packageManager.resolveActivity(
+                    pickContactIntent,
+                    PackageManager.MATCH_DEFAULT_ONLY // CATEGORY_DEFAULT가 메니페스트의 인텐트 필터에 정의된 액티비티 찾는다.
+                )
+
+                // 찾은 액티비티가 없다면(여기서는 연락처 앱) '용의자 선택' 버튼 비활성화
+                if (resolvedActivity == null) {
+                    isEnabled = false
+                }
+            }
+
+            // 용의자에게 바로 전화 걸기
+            callSuspectImageButton.apply {
+
             }
         }
     }
