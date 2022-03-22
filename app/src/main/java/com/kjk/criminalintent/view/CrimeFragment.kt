@@ -3,6 +3,8 @@ package com.kjk.criminalintent.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -13,6 +15,7 @@ import android.util.Log
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +25,7 @@ import com.kjk.criminalintent.data.CrimeDetailViewModel
 import com.kjk.criminalintent.databinding.FragmentCrimeBinding
 import com.kjk.criminalintent.extension.Date.FORTMAT_LONGLONG
 import java.util.*
+import java.util.jar.Manifest
 
 // Controller (Model과 View와 상호 작용한다.)
 // 특정 범죄의 상세내역 조회, 수정 기능 제공
@@ -40,6 +44,16 @@ class CrimeFragment :
     private lateinit var crime: Crime
 
     private lateinit var getResultSuspect: ActivityResultLauncher<Intent>
+
+    // 권한
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Log.d(TAG, ": permission granted")
+        } else {
+            Log.d(TAG, ": permission denided")
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -71,7 +85,11 @@ class CrimeFragment :
                 val contactUri = result.data?.data ?: return@registerForActivityResult
 
                 // 쿼리에서 값으로 반환할 필드를 지정한다.
-                val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+                // TODO 15장 챌린지 :: 또 다른 암시적 인텐트
+                val queryFields = arrayOf(
+                    ContactsContract.Contacts.DISPLAY_NAME
+                    //ContactsContract.CommonDataKinds.Phone.NUMBER
+                )
 
                 // 쿼리를 수행한다. contactUri는 콘텐츠 제공자의 테이블을 나타낸다.
                 val cursor = requireActivity().contentResolver
@@ -86,14 +104,15 @@ class CrimeFragment :
                     // 첫번째 데이터 행의 첫번째 속상 값을 가져 온다.
                     // 이 값이 용의자의 이름이다.
                     it.moveToFirst()
-                    val suspect = it.getString(0)
-                    crime.suspect = suspect
+                    val suspectName = it.getString(0)
+                    //val suspectPhone = it.getString(1)
+                    //Log.d(TAG, "size: ${cursor.count}, name: ${suspectName}, phoneNum : ${suspectPhone}")
+                    crime.suspect = suspectName
                     crimeDetailViewModel.saveCrime(crime)
-                    binding.selectSuspectButton.text = suspect
+                    binding.selectSuspectButton.text = suspectName
                 }
             }
         }
-
         return binding.root
     }
 
@@ -115,8 +134,6 @@ class CrimeFragment :
             crime.date = result
             updateUI()
         }
-
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -194,6 +211,47 @@ class CrimeFragment :
                 setOnClickListener {
                     getResultSuspect.launch(pickContactIntent)
                 }
+
+                // TODO 15장 여기 해결해야함, 방어코드에서 자꾸 null이 출력된다.
+                // 일부 사용자 장치에는 연락처 앱이 없을 수 있다.
+                // 이때는 버그(안드로이드 OS가 일치하는 액티비티를 찾을 수 없으므로, 앱이 중단)
+                // 연락처 앱이 없는 장치의 방어코드
+//                val packageManager: PackageManager = requireActivity().packageManager
+//                val resolvedActivity: ResolveInfo? = packageManager.resolveActivity(
+//                    pickContactIntent,
+//                    PackageManager.MATCH_DEFAULT_ONLY // CATEGORY_DEFAULT가 메니페스트의 인텐트 필터에 정의된 액티비티 찾는다.
+//                )
+//
+//                // 찾은 액티비티가 없다면(여기서는 연락처 앱) '용의자 선택' 버튼 비활성화
+//                if (resolvedActivity == null) {
+//                    Log.d(TAG, "onStart: no Activity")
+//                    isEnabled = false
+//                }
+            }
+
+            // 용의자에게 바로 전화 걸기 TODO 15장 챌린지
+            callSuspectImageButton.apply {
+                setOnClickListener {
+                    checkPermission()
+                }
+            }
+        }
+    }
+
+    // 권한 체크
+    private fun checkPermission() {
+        when {
+            ContextCompat.checkSelfPermission(requireContext(),
+                android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED -> {
+
+                }
+            shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS) -> {
+
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.READ_CONTACTS
+                )
             }
         }
     }
