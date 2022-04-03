@@ -48,10 +48,12 @@ class CrimeFragment :
     // 권한
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
+        if (isGranted) { // 권한이 혀용되었다는 뜻
             Log.d(TAG, ": permission granted")
+            // 연락처 데이터 얻기 여기서
+
         } else {
-            Log.d(TAG, ": permission denided")
+            Log.d(TAG, ": permission denied")
         }
     }
 
@@ -216,17 +218,17 @@ class CrimeFragment :
                 // 일부 사용자 장치에는 연락처 앱이 없을 수 있다.
                 // 이때는 버그(안드로이드 OS가 일치하는 액티비티를 찾을 수 없으므로, 앱이 중단)
                 // 연락처 앱이 없는 장치의 방어코드
-//                val packageManager: PackageManager = requireActivity().packageManager
-//                val resolvedActivity: ResolveInfo? = packageManager.resolveActivity(
-//                    pickContactIntent,
-//                    PackageManager.MATCH_DEFAULT_ONLY // CATEGORY_DEFAULT가 메니페스트의 인텐트 필터에 정의된 액티비티 찾는다.
-//                )
-//
-//                // 찾은 액티비티가 없다면(여기서는 연락처 앱) '용의자 선택' 버튼 비활성화
-//                if (resolvedActivity == null) {
-//                    Log.d(TAG, "onStart: no Activity")
-//                    isEnabled = false
-//                }
+                val packageManager: PackageManager = requireActivity().packageManager
+                val resolvedActivity: ResolveInfo? = packageManager.resolveActivity(
+                    pickContactIntent,
+                    PackageManager.MATCH_DEFAULT_ONLY // CATEGORY_DEFAULT가 메니페스트의 인텐트 필터에 정의된 액티비티 찾는다.
+                )
+
+                // 찾은 액티비티가 없다면(여기서는 연락처 앱) '용의자 선택' 버튼 비활성화
+                if (resolvedActivity == null) {
+                    Log.d(TAG, "onStart: no Activity")
+                    isEnabled = false
+                }
             }
 
             // 용의자에게 바로 전화 걸기 TODO 15장 챌린지
@@ -243,12 +245,13 @@ class CrimeFragment :
         when {
             ContextCompat.checkSelfPermission(requireContext(),
                 android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED -> {
-
+                Log.d(TAG, "checkPermission: granted")
                 }
             shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS) -> {
-
+                Log.d(TAG, "checkPermission: shouldShowRequestRational")
             }
             else -> {
+                Log.d(TAG, "checkPermission: else_request_permission_granted")
                 requestPermissionLauncher.launch(
                     android.Manifest.permission.READ_CONTACTS
                 )
